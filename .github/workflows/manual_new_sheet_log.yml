@@ -1,0 +1,40 @@
+name: Manual New Sheet Log
+
+on:
+  workflow_dispatch:
+
+jobs:
+  log-merged-prs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt update
+          sudo apt install gh -y
+
+      - name: Authenticate gh CLI
+        run: gh auth login --with-token <<< "${{ secrets.GH_PAT }}"
+
+      - name: Fetch merged PRs and save to JSON
+        run: |
+          gh pr list --state merged --limit 100 --json number,title,body,author,headRefName,baseRefName,mergedAt,mergeCommitSha > prs.json
+
+      - name: Convert JSON to Excel
+        run: |
+          pip install openpyxl
+          python .github/scripts/log_new_sheet_before_deadline.py
+
+      - name: Upload Excel file
+        uses: actions/upload-artifact@v4
+        with:
+          name: new-sheet
+          path: new_sheet.xlsx
