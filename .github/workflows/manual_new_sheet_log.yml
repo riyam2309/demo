@@ -26,7 +26,7 @@ jobs:
 
       - name: Fetch merged PRs and save to JSON
         run: |
-          gh pr list --state merged --limit 100 --json number,title,body,author,headRefName,baseRefName,mergedAt,mergeCommitSha > prs.json
+          gh pr list --state merged --limit 100 --json number,title,body,author,headRefName,baseRefName,mergedAt,mergeCommit > prs.json
 
 
       - name: Convert JSON to Excel
