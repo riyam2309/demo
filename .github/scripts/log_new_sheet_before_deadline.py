@@ -37,8 +37,11 @@ for pr in prs:
         action = "Merged"
 
     # Use sha as change ID (mocked fallback if unavailable)
-    sha = pr.get("mergeCommit") or pr.get("mergeCommitSha") or "N/A"
-    change_id = sha if sha != "N/A" else "N/A"
+    # sha = pr.get("mergeCommit") or pr.get("mergeCommitSha") or "N/A"
+    merge_commit = pr.get("mergeCommit")
+    change_id = merge_commit.get("oid") if merge_commit else "N/A"
+
+    # change_id = sha if sha != "N/A" else "N/A"
 
     ws.append([source_branch, author, action, comment, merged_at, change_id])
     logged_count += 1
